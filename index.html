@@ -27,20 +27,32 @@
       padding: 8px 16px;
       margin-right: 10px;
       cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      color: white;
+    }
+    .fade-btn {
+      background: #e67e22;
+    }
+    .reset-btn {
+      background: #3498db;
+    }
+    .reset-all-btn {
+      background: #e74c3c;
     }
   </style>
 </head>
 <body>
   <h1>Songs</h1>
 
-  <button onclick="resetAll()">Reset All</button>
+  <button class="reset-all-btn" onclick="resetAll()">Reset All</button>
 
   <div class="track">
     <h3>Life is a Highway (Boosted)</h3>
     <audio controls src="songs/1 life is a highway boosted.mp3"></audio>
     <div class="controls">
-      <button onclick="fadeOut(this)">Fade Out</button>
-      <button onclick="reset(this)">Reset</button>
+      <button class="fade-btn" onclick="fadeOut(this)">Fade Out</button>
+      <button class="reset-btn" onclick="reset(this)">Reset</button>
     </div>
   </div>
 
@@ -48,8 +60,8 @@
     <h3>Heigh-Ho</h3>
     <audio controls src="songs/2 Heigh-Ho.mp3"></audio>
     <div class="controls">
-      <button onclick="fadeOut(this)">Fade Out</button>
-      <button onclick="reset(this)">Reset</button>
+      <button class="fade-btn" onclick="fadeOut(this)">Fade Out</button>
+      <button class="reset-btn" onclick="reset(this)">Reset</button>
     </div>
   </div>
 
@@ -57,8 +69,8 @@
     <h3>AC/DC - Highway to Hell</h3>
     <audio controls src="songs/3 AC_DC - Highway to Hell Audio.mp3"></audio>
     <div class="controls">
-      <button onclick="fadeOut(this)">Fade Out</button>
-      <button onclick="reset(this)">Reset</button>
+      <button class="fade-btn" onclick="fadeOut(this)">Fade Out</button>
+      <button class="reset-btn" onclick="reset(this)">Reset</button>
     </div>
   </div>
 
@@ -66,8 +78,8 @@
     <h3>Phone - Gibberish - Bonnie</h3>
     <audio controls src="songs/4 Phone - Gibberish - Bonnie.mp3"></audio>
     <div class="controls">
-      <button onclick="fadeOut(this)">Fade Out</button>
-      <button onclick="reset(this)">Reset</button>
+      <button class="fade-btn" onclick="fadeOut(this)">Fade Out</button>
+      <button class="reset-btn" onclick="reset(this)">Reset</button>
     </div>
   </div>
 
@@ -75,8 +87,8 @@
     <h3>Willie Nelson - On The Road Again</h3>
     <audio controls src="songs/5 Willie Nelson - On The Road Again Official Audio.mp3"></audio>
     <div class="controls">
-      <button onclick="fadeOut(this)">Fade Out</button>
-      <button onclick="reset(this)">Reset</button>
+      <button class="fade-btn" onclick="fadeOut(this)">Fade Out</button>
+      <button class="reset-btn" onclick="reset(this)">Reset</button>
     </div>
   </div>
 
@@ -84,8 +96,8 @@
     <h3>Danger: High Voltage (2025 Remaster)</h3>
     <audio controls src="songs/6 Danger_ High Voltage 2025 Remaster.mp3"></audio>
     <div class="controls">
-      <button onclick="fadeOut(this)">Fade Out</button>
-      <button onclick="reset(this)">Reset</button>
+      <button class="fade-btn" onclick="fadeOut(this)">Fade Out</button>
+      <button class="reset-btn" onclick="reset(this)">Reset</button>
     </div>
   </div>
 
