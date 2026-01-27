@@ -177,10 +177,13 @@
           gainNode.gain.value = vol;
         } else {
           clearInterval(fade);
-          audio.pause();
-          audio.currentTime = 0;
-          setTimeout(() => { gainNode.gain.value = 1; }, 50);
-          playBtn.textContent = 'Play';
+          gainNode.gain.value = 0;
+          setTimeout(() => {
+            audio.pause();
+            audio.currentTime = 0;
+            gainNode.gain.value = 1;
+            playBtn.textContent = 'Play';
+          }, 100);
         }
       }, 100);
     }
