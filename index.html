@@ -5,31 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Songs</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: sans-serif;
       max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    header h1 {
+      margin: 0;
     }
     .track {
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       padding: 15px;
       border: 1px solid #ddd;
       border-radius: 8px;
     }
     .track h3 {
       margin: 0 0 10px 0;
+      font-size: 1rem;
+    }
+    audio {
+      width: 100%;
     }
     .controls {
       margin-top: 10px;
+      display: flex;
+      gap: 10px;
     }
     button {
-      padding: 8px 16px;
-      margin-right: 10px;
+      padding: 10px 16px;
       cursor: pointer;
       border: none;
       border-radius: 4px;
       color: white;
+      font-size: 1rem;
     }
     .fade-btn {
       background: #e67e22;
@@ -43,9 +61,10 @@
   </style>
 </head>
 <body>
-  <h1>Songs</h1>
-
-  <button class="reset-all-btn" onclick="resetAll()">Reset All</button>
+  <header>
+    <h1>Songs</h1>
+    <button class="reset-all-btn" onclick="resetAll()">Reset All</button>
+  </header>
 
   <div class="track">
     <h3>Life is a Highway (Boosted)</h3>
