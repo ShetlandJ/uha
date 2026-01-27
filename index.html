@@ -243,7 +243,7 @@
           if (nextGainNode) {
             nextGainNode.gain.value = 1;
           }
-          btn.textContent = 'Fade to Next';
+          btn.textContent = btn.dataset.lastTrack ? 'Fade Out' : 'Fade to Next';
         }
       }, 100);
     }
@@ -309,6 +309,12 @@
         ensureAudioContext();
       }
     });
+
+    // Set last track's fade button to "Fade Out"
+    const tracks = document.querySelectorAll('.track');
+    const lastFadeBtn = tracks[tracks.length - 1].querySelector('.fade-btn');
+    lastFadeBtn.textContent = 'Fade Out';
+    lastFadeBtn.dataset.lastTrack = 'true';
   </script>
 </body>
 </html>
