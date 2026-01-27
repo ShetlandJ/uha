@@ -133,8 +133,29 @@
   </div>
 
   <script>
+    let audioContext = null;
+    const gainNodes = new Map();
+
+    function getGainNode(audio) {
+      if (!gainNodes.has(audio)) {
+        if (!audioContext) {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const source = audioContext.createMediaElementSource(audio);
+        const gainNode = audioContext.createGain();
+        source.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        gainNodes.set(audio, gainNode);
+      }
+      return gainNodes.get(audio);
+    }
+
     function togglePlay(btn) {
       const audio = btn.closest('.track').querySelector('audio');
+      getGainNode(audio);
+      if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
       if (audio.paused) {
         audio.play();
         btn.textContent = 'Pause';
@@ -148,13 +169,16 @@
       const track = btn.closest('.track');
       const audio = track.querySelector('audio');
       const playBtn = track.querySelector('.play-btn');
+      const gainNode = getGainNode(audio);
+      let vol = gainNode.gain.value;
       const fade = setInterval(() => {
-        if (audio.volume > 0.05) {
-          audio.volume -= 0.05;
+        if (vol > 0.05) {
+          vol -= 0.05;
+          gainNode.gain.value = vol;
         } else {
           clearInterval(fade);
           audio.pause();
-          audio.volume = 1;
+          gainNode.gain.value = 1;
           audio.currentTime = 0;
           playBtn.textContent = 'Play';
         }
@@ -165,8 +189,9 @@
       const track = btn.closest('.track');
       const audio = track.querySelector('audio');
       const playBtn = track.querySelector('.play-btn');
+      const gainNode = gainNodes.get(audio);
       audio.pause();
-      audio.volume = 1;
+      if (gainNode) gainNode.gain.value = 1;
       audio.currentTime = 0;
       playBtn.textContent = 'Play';
     }
@@ -175,8 +200,9 @@
       document.querySelectorAll('.track').forEach(track => {
         const audio = track.querySelector('audio');
         const playBtn = track.querySelector('.play-btn');
+        const gainNode = gainNodes.get(audio);
         audio.pause();
-        audio.volume = 1;
+        if (gainNode) gainNode.gain.value = 1;
         audio.currentTime = 0;
         playBtn.textContent = 'Play';
       });
