@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Songs</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .track {
+      margin-bottom: 30px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .track h3 {
+      margin: 0 0 10px 0;
+    }
+    .controls {
+      margin-top: 10px;
+    }
+    button {
+      padding: 8px 16px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Songs</h1>
+
+  <div class="track">
+    <h3>Life is a Highway (Boosted)</h3>
+    <audio controls src="songs/1 life is a highway boosted.mp3"></audio>
+    <div class="controls">
+      <button onclick="fadeOut(this)">Fade Out</button>
+      <button onclick="reset(this)">Reset</button>
+    </div>
+  </div>
+
+  <div class="track">
+    <h3>Heigh-Ho</h3>
+    <audio controls src="songs/2 Heigh-Ho.mp3"></audio>
+    <div class="controls">
+      <button onclick="fadeOut(this)">Fade Out</button>
+      <button onclick="reset(this)">Reset</button>
+    </div>
+  </div>
+
+  <div class="track">
+    <h3>AC/DC - Highway to Hell</h3>
+    <audio controls src="songs/3 AC_DC - Highway to Hell Audio.mp3"></audio>
+    <div class="controls">
+      <button onclick="fadeOut(this)">Fade Out</button>
+      <button onclick="reset(this)">Reset</button>
+    </div>
+  </div>
+
+  <div class="track">
+    <h3>Phone - Gibberish - Bonnie</h3>
+    <audio controls src="songs/4 Phone - Gibberish - Bonnie.mp3"></audio>
+    <div class="controls">
+      <button onclick="fadeOut(this)">Fade Out</button>
+      <button onclick="reset(this)">Reset</button>
+    </div>
+  </div>
+
+  <div class="track">
+    <h3>Willie Nelson - On The Road Again</h3>
+    <audio controls src="songs/5 Willie Nelson - On The Road Again Official Audio.mp3"></audio>
+    <div class="controls">
+      <button onclick="fadeOut(this)">Fade Out</button>
+      <button onclick="reset(this)">Reset</button>
+    </div>
+  </div>
+
+  <div class="track">
+    <h3>Danger: High Voltage (2025 Remaster)</h3>
+    <audio controls src="songs/6 Danger_ High Voltage 2025 Remaster.mp3"></audio>
+    <div class="controls">
+      <button onclick="fadeOut(this)">Fade Out</button>
+      <button onclick="reset(this)">Reset</button>
+    </div>
+  </div>
+
+  <script>
+    function fadeOut(btn) {
+      const audio = btn.closest('.track').querySelector('audio');
+      const fade = setInterval(() => {
+        if (audio.volume > 0.05) {
+          audio.volume -= 0.05;
+        } else {
+          audio.volume = 0;
+          clearInterval(fade);
+        }
+      }, 100);
+    }
+
+    function reset(btn) {
+      const audio = btn.closest('.track').querySelector('audio');
+      audio.pause();
+      audio.volume = 1;
+      audio.currentTime = 0;
+    }
+  </script>
+</body>
+</html>
