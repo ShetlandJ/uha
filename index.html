@@ -212,6 +212,7 @@
       let vol = gainNode.gain.value;
       let nextVol = 0;
 
+      btn.textContent = 'Fading...';
       const fade = setInterval(() => {
         if (vol > 0.05) {
           vol -= 0.05;
@@ -242,6 +243,7 @@
           if (nextGainNode) {
             nextGainNode.gain.value = 1;
           }
+          btn.textContent = 'Fade to Next';
         }
       }, 100);
     }
