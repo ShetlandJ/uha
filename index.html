@@ -145,13 +145,18 @@
     }
 
     function fadeOut(btn) {
-      const audio = btn.closest('.track').querySelector('audio');
+      const track = btn.closest('.track');
+      const audio = track.querySelector('audio');
+      const playBtn = track.querySelector('.play-btn');
       const fade = setInterval(() => {
         if (audio.volume > 0.05) {
           audio.volume -= 0.05;
         } else {
-          audio.volume = 0;
           clearInterval(fade);
+          audio.pause();
+          audio.volume = 1;
+          audio.currentTime = 0;
+          playBtn.textContent = 'Play';
         }
       }, 100);
     }
