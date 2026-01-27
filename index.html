@@ -178,8 +178,8 @@
         } else {
           clearInterval(fade);
           audio.pause();
-          gainNode.gain.value = 1;
           audio.currentTime = 0;
+          setTimeout(() => { gainNode.gain.value = 1; }, 50);
           playBtn.textContent = 'Play';
         }
       }, 100);
