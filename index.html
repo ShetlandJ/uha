@@ -39,7 +39,13 @@
     .controls {
       margin-top: 10px;
       display: flex;
-      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .play-btn {
+      background: #27ae60;
+      font-size: 1.5rem;
+      padding: 12px 24px;
     }
     button {
       padding: 10px 16px;
@@ -70,6 +76,7 @@
     <h3>Life is a Highway (Boosted)</h3>
     <audio controls src="songs/1 life is a highway boosted.mp3"></audio>
     <div class="controls">
+      <button class="play-btn" onclick="togglePlay(this)">Play</button>
       <button class="fade-btn" onclick="fadeOut(this)">Fade Out</button>
       <button class="reset-btn" onclick="reset(this)">Reset</button>
     </div>
@@ -79,6 +86,7 @@
     <h3>Heigh-Ho</h3>
     <audio controls src="songs/2 Heigh-Ho.mp3"></audio>
     <div class="controls">
+      <button class="play-btn" onclick="togglePlay(this)">Play</button>
       <button class="fade-btn" onclick="fadeOut(this)">Fade Out</button>
       <button class="reset-btn" onclick="reset(this)">Reset</button>
     </div>
@@ -88,6 +96,7 @@
     <h3>AC/DC - Highway to Hell</h3>
     <audio controls src="songs/3 AC_DC - Highway to Hell Audio.mp3"></audio>
     <div class="controls">
+      <button class="play-btn" onclick="togglePlay(this)">Play</button>
       <button class="fade-btn" onclick="fadeOut(this)">Fade Out</button>
       <button class="reset-btn" onclick="reset(this)">Reset</button>
     </div>
@@ -97,6 +106,7 @@
     <h3>Phone - Gibberish - Bonnie</h3>
     <audio controls src="songs/4 Phone - Gibberish - Bonnie.mp3"></audio>
     <div class="controls">
+      <button class="play-btn" onclick="togglePlay(this)">Play</button>
       <button class="fade-btn" onclick="fadeOut(this)">Fade Out</button>
       <button class="reset-btn" onclick="reset(this)">Reset</button>
     </div>
@@ -106,6 +116,7 @@
     <h3>Willie Nelson - On The Road Again</h3>
     <audio controls src="songs/5 Willie Nelson - On The Road Again Official Audio.mp3"></audio>
     <div class="controls">
+      <button class="play-btn" onclick="togglePlay(this)">Play</button>
       <button class="fade-btn" onclick="fadeOut(this)">Fade Out</button>
       <button class="reset-btn" onclick="reset(this)">Reset</button>
     </div>
@@ -115,12 +126,24 @@
     <h3>Danger: High Voltage (2025 Remaster)</h3>
     <audio controls src="songs/6 Danger_ High Voltage 2025 Remaster.mp3"></audio>
     <div class="controls">
+      <button class="play-btn" onclick="togglePlay(this)">Play</button>
       <button class="fade-btn" onclick="fadeOut(this)">Fade Out</button>
       <button class="reset-btn" onclick="reset(this)">Reset</button>
     </div>
   </div>
 
   <script>
+    function togglePlay(btn) {
+      const audio = btn.closest('.track').querySelector('audio');
+      if (audio.paused) {
+        audio.play();
+        btn.textContent = 'Pause';
+      } else {
+        audio.pause();
+        btn.textContent = 'Play';
+      }
+    }
+
     function fadeOut(btn) {
       const audio = btn.closest('.track').querySelector('audio');
       const fade = setInterval(() => {
@@ -134,17 +157,23 @@
     }
 
     function reset(btn) {
-      const audio = btn.closest('.track').querySelector('audio');
+      const track = btn.closest('.track');
+      const audio = track.querySelector('audio');
+      const playBtn = track.querySelector('.play-btn');
       audio.pause();
       audio.volume = 1;
       audio.currentTime = 0;
+      playBtn.textContent = 'Play';
     }
 
     function resetAll() {
-      document.querySelectorAll('audio').forEach(audio => {
+      document.querySelectorAll('.track').forEach(track => {
+        const audio = track.querySelector('audio');
+        const playBtn = track.querySelector('.play-btn');
         audio.pause();
         audio.volume = 1;
         audio.currentTime = 0;
+        playBtn.textContent = 'Play';
       });
     }
   </script>
