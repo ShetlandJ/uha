@@ -310,6 +310,11 @@
       }
     });
 
+    // Register service worker for offline support
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+
     // Set last track's fade button to "Fade Out"
     const tracks = document.querySelectorAll('.track');
     const lastFadeBtn = tracks[tracks.length - 1].querySelector('.fade-btn');
