@@ -371,15 +371,13 @@
     });
 
     // Offline support
-    const EXPECTED_ASSETS = [
-      '/',
-      '/index.html',
-      '/songs/1 life is a highway boosted.mp3',
-      '/songs/2 Heigh-Ho.mp3',
-      '/songs/3 AC_DC - Highway to Hell Audio.mp3',
-      '/songs/4 Phone - Gibberish - Bonnie.mp3',
-      '/songs/5 Willie Nelson - On The Road Again Official Audio.mp3',
-      '/songs/6 Danger_ High Voltage 2025 Remaster.mp3',
+    const EXPECTED_SONGS = [
+      'songs/1 life is a highway boosted.mp3',
+      'songs/2 Heigh-Ho.mp3',
+      'songs/3 AC_DC - Highway to Hell Audio.mp3',
+      'songs/4 Phone - Gibberish - Bonnie.mp3',
+      'songs/5 Willie Nelson - On The Road Again Official Audio.mp3',
+      'songs/6 Danger_ High Voltage 2025 Remaster.mp3',
     ];
 
     const banner = document.getElementById('offline-banner');
@@ -401,14 +399,14 @@
       try {
         const cache = await caches.open('songs-v1');
         const keys = await cache.keys();
-        const cached = keys.map(r => new URL(r.url).pathname);
-        const allCached = EXPECTED_ASSETS.every(a => cached.includes(a));
-        if (allCached) {
+        const cachedUrls = keys.map(r => r.url);
+        const songsCached = EXPECTED_SONGS.filter(s =>
+          cachedUrls.some(url => url.endsWith(s))
+        ).length;
+        if (songsCached === EXPECTED_SONGS.length) {
           setBannerState('ready', 'All songs available offline');
         } else {
-          const songsCached = cached.filter(p => p.startsWith('/songs/')).length;
-          const totalSongs = EXPECTED_ASSETS.filter(a => a.startsWith('/songs/')).length;
-          setBannerState('not-ready', songsCached + ' of ' + totalSongs + ' songs cached');
+          setBannerState('not-ready', songsCached + ' of ' + EXPECTED_SONGS.length + ' songs cached');
         }
       } catch {
         setBannerState('not-ready', 'Songs not yet available offline');
@@ -419,14 +417,15 @@
       setBannerState('downloading', 'Downloading songs for offline use...');
       try {
         const cache = await caches.open('songs-v1');
-        for (let i = 0; i < EXPECTED_ASSETS.length; i++) {
-          const asset = EXPECTED_ASSETS[i];
+        const allAssets = ['./', './index.html'].concat(EXPECTED_SONGS.map(s => './' + s));
+        for (let i = 0; i < allAssets.length; i++) {
+          const asset = allAssets[i];
           const existing = await cache.match(asset);
           if (!existing) {
             await cache.add(asset);
           }
           const done = i + 1;
-          setBannerState('downloading', 'Downloaded ' + done + ' of ' + EXPECTED_ASSETS.length + '...');
+          setBannerState('downloading', 'Downloaded ' + done + ' of ' + allAssets.length + '...');
         }
         setBannerState('ready', 'All songs available offline');
       } catch (e) {
@@ -436,7 +435,7 @@
     }
 
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').then(() => checkOfflineStatus());
+      navigator.serviceWorker.register('sw.js').then(() => checkOfflineStatus());
     }
 
     // Set last track's fade button to "Fade Out"
