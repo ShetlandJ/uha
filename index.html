@@ -78,6 +78,58 @@
     .reset-all-btn {
       background: #e74c3c;
     }
+    .offline-banner {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .offline-banner.ready {
+      background: #d4edda;
+      border: 1px solid #b7dfb9;
+      color: #155724;
+    }
+    .offline-banner.not-ready {
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      color: #856404;
+    }
+    .offline-banner.downloading {
+      background: #d1ecf1;
+      border: 1px solid #bee5eb;
+      color: #0c5460;
+    }
+    .offline-banner.error {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+    .download-btn {
+      background: #856404;
+      white-space: nowrap;
+    }
+    .offline-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .ready .status-dot { background: #28a745; }
+    .not-ready .status-dot { background: #ffc107; }
+    .downloading .status-dot { background: #17a2b8; animation: pulse 1s infinite; }
+    .error .status-dot { background: #dc3545; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
   </style>
 </head>
 <body>
@@ -85,6 +137,14 @@
     <h1>Songs</h1>
     <button class="reset-all-btn" onclick="resetAll()">Reset All</button>
   </header>
+
+  <div id="offline-banner" class="offline-banner not-ready" style="display:none">
+    <div class="offline-status">
+      <span class="status-dot"></span>
+      <span id="offline-text">Checking offline status...</span>
+    </div>
+    <button id="download-btn" class="download-btn" style="display:none" onclick="downloadForOffline()">Download for offline</button>
+  </div>
 
   <div class="track">
     <h3>Life is a Highway (Boosted)</h3>
@@ -310,9 +370,73 @@
       }
     });
 
-    // Register service worker for offline support
+    // Offline support
+    const EXPECTED_ASSETS = [
+      '/',
+      '/index.html',
+      '/songs/1 life is a highway boosted.mp3',
+      '/songs/2 Heigh-Ho.mp3',
+      '/songs/3 AC_DC - Highway to Hell Audio.mp3',
+      '/songs/4 Phone - Gibberish - Bonnie.mp3',
+      '/songs/5 Willie Nelson - On The Road Again Official Audio.mp3',
+      '/songs/6 Danger_ High Voltage 2025 Remaster.mp3',
+    ];
+
+    const banner = document.getElementById('offline-banner');
+    const statusText = document.getElementById('offline-text');
+    const downloadBtn = document.getElementById('download-btn');
+
+    function setBannerState(state, text) {
+      banner.className = 'offline-banner ' + state;
+      banner.style.display = 'flex';
+      statusText.textContent = text;
+      downloadBtn.style.display = state === 'not-ready' ? 'inline-block' : 'none';
+    }
+
+    async function checkOfflineStatus() {
+      if (!('serviceWorker' in navigator) || !('caches' in window)) {
+        banner.style.display = 'none';
+        return;
+      }
+      try {
+        const cache = await caches.open('songs-v1');
+        const keys = await cache.keys();
+        const cached = keys.map(r => new URL(r.url).pathname);
+        const allCached = EXPECTED_ASSETS.every(a => cached.includes(a));
+        if (allCached) {
+          setBannerState('ready', 'All songs available offline');
+        } else {
+          const songsCached = cached.filter(p => p.startsWith('/songs/')).length;
+          const totalSongs = EXPECTED_ASSETS.filter(a => a.startsWith('/songs/')).length;
+          setBannerState('not-ready', songsCached + ' of ' + totalSongs + ' songs cached');
+        }
+      } catch {
+        setBannerState('not-ready', 'Songs not yet available offline');
+      }
+    }
+
+    async function downloadForOffline() {
+      setBannerState('downloading', 'Downloading songs for offline use...');
+      try {
+        const cache = await caches.open('songs-v1');
+        for (let i = 0; i < EXPECTED_ASSETS.length; i++) {
+          const asset = EXPECTED_ASSETS[i];
+          const existing = await cache.match(asset);
+          if (!existing) {
+            await cache.add(asset);
+          }
+          const done = i + 1;
+          setBannerState('downloading', 'Downloaded ' + done + ' of ' + EXPECTED_ASSETS.length + '...');
+        }
+        setBannerState('ready', 'All songs available offline');
+      } catch (e) {
+        setBannerState('error', 'Download failed — check your connection and try again');
+        downloadBtn.style.display = 'inline-block';
+      }
+    }
+
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
+      navigator.serviceWorker.register('/sw.js').then(() => checkOfflineStatus());
     }
 
     // Set last track's fade button to "Fade Out"
