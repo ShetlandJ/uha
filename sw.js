@@ -1,22 +1,6 @@
-const CACHE_NAME = 'songs-v2';
+const CACHE_NAME = 'songs-v3';
 
-const ASSETS = [
-  './',
-  './index.html',
-  './songs/1 life is a highway boosted.mp3',
-  './songs/2 Heigh-Ho.mp3',
-  './songs/3 AC_DC - Highway to Hell Audio.mp3',
-  './songs/4 Phone - Gibberish - Bonnie.mp3',
-  './songs/5 Willie Nelson - On The Road Again Official Audio.mp3',
-  './songs/6 Danger_ High Voltage 2025 Remaster.mp3',
-];
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-  );
-  self.skipWaiting();
-});
+self.addEventListener('install', () => self.skipWaiting());
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
@@ -28,6 +12,23 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  // HTML: network first, fall back to cache (so code updates propagate)
+  if (event.request.mode === 'navigate' || url.pathname.endsWith('.html')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Everything else (songs, etc): cache first, fall back to network
   event.respondWith(
     caches.match(event.request).then((cached) => cached || fetch(event.request))
   );

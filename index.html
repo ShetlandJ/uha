@@ -340,7 +340,7 @@
         playBtn.textContent = 'Play';
       });
       if ('caches' in window) {
-        caches.delete('songs-v2').then(() => checkOfflineStatus());
+        caches.delete('songs-v3').then(() => checkOfflineStatus());
       }
     }
 
@@ -407,7 +407,7 @@
       }
       var isOnline = navigator.onLine;
       try {
-        const cache = await caches.open('songs-v2');
+        const cache = await caches.open('songs-v3');
         let songsCached = 0;
         for (const song of EXPECTED_SONGS) {
           const match = await cache.match('./' + song);
@@ -435,7 +435,7 @@
     async function downloadForOffline() {
       setBannerState('downloading', 'Downloading songs for offline use...');
       try {
-        const cache = await caches.open('songs-v2');
+        const cache = await caches.open('songs-v3');
         const allAssets = ['./', './index.html'].concat(EXPECTED_SONGS.map(s => './' + s));
         for (let i = 0; i < allAssets.length; i++) {
           const asset = allAssets[i];
