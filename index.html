@@ -107,6 +107,11 @@
       border: 1px solid #f5c6cb;
       color: #721c24;
     }
+    .offline-banner.offline {
+      background: #d1ecf1;
+      border: 1px solid #bee5eb;
+      color: #0c5460;
+    }
     .download-btn {
       background: #856404;
       white-space: nowrap;
@@ -126,6 +131,7 @@
     .not-ready .status-dot { background: #ffc107; }
     .downloading .status-dot { background: #17a2b8; animation: pulse 1s infinite; }
     .error .status-dot { background: #dc3545; }
+    .offline .status-dot { background: #17a2b8; }
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
@@ -396,6 +402,7 @@
         banner.style.display = 'none';
         return;
       }
+      var isOnline = navigator.onLine;
       try {
         const cache = await caches.open('songs-v1');
         const keys = await cache.keys();
@@ -403,13 +410,22 @@
         const songsCached = EXPECTED_SONGS.filter(s =>
           cachedUrls.some(url => url.endsWith(s))
         ).length;
-        if (songsCached === EXPECTED_SONGS.length) {
+        const allCached = songsCached === EXPECTED_SONGS.length;
+        if (!isOnline && allCached) {
+          setBannerState('offline', 'You\'re offline — all songs ready to play');
+        } else if (!isOnline && !allCached) {
+          setBannerState('offline', 'You\'re offline — ' + songsCached + ' of ' + EXPECTED_SONGS.length + ' songs cached. Connect to download the rest');
+        } else if (allCached) {
           setBannerState('ready', 'All songs available offline');
         } else {
           setBannerState('not-ready', songsCached + ' of ' + EXPECTED_SONGS.length + ' songs cached');
         }
       } catch {
-        setBannerState('not-ready', 'Songs not yet available offline');
+        if (!isOnline) {
+          setBannerState('offline', 'You\'re offline — could not check cache status');
+        } else {
+          setBannerState('not-ready', 'Songs not yet available offline');
+        }
       }
     }
 
@@ -437,6 +453,9 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then(() => checkOfflineStatus());
     }
+
+    window.addEventListener('online', () => checkOfflineStatus());
+    window.addEventListener('offline', () => checkOfflineStatus());
 
     // Set last track's fade button to "Fade Out"
     const tracks = document.querySelectorAll('.track');
