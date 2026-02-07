@@ -339,6 +339,9 @@
         progressFill.style.width = '0%';
         playBtn.textContent = 'Play';
       });
+      if ('caches' in window) {
+        caches.delete('songs-v2').then(() => checkOfflineStatus());
+      }
     }
 
     // Set up progress bars and audio event listeners
