@@ -1,4 +1,4 @@
-const CACHE_NAME = 'songs-v1';
+const CACHE_NAME = 'songs-v2';
 
 const ASSETS = [
   './',

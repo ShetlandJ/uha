@@ -404,12 +404,12 @@
       }
       var isOnline = navigator.onLine;
       try {
-        const cache = await caches.open('songs-v1');
-        const keys = await cache.keys();
-        const cachedUrls = keys.map(r => decodeURIComponent(r.url));
-        const songsCached = EXPECTED_SONGS.filter(s =>
-          cachedUrls.some(url => url.endsWith(s))
-        ).length;
+        const cache = await caches.open('songs-v2');
+        let songsCached = 0;
+        for (const song of EXPECTED_SONGS) {
+          const match = await cache.match('./' + song);
+          if (match) songsCached++;
+        }
         const allCached = songsCached === EXPECTED_SONGS.length;
         if (!isOnline && allCached) {
           setBannerState('offline', 'You\'re offline — all songs ready to play');
@@ -432,7 +432,7 @@
     async function downloadForOffline() {
       setBannerState('downloading', 'Downloading songs for offline use...');
       try {
-        const cache = await caches.open('songs-v1');
+        const cache = await caches.open('songs-v2');
         const allAssets = ['./', './index.html'].concat(EXPECTED_SONGS.map(s => './' + s));
         for (let i = 0; i < allAssets.length; i++) {
           const asset = allAssets[i];
