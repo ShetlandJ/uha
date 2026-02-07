@@ -406,7 +406,7 @@
       try {
         const cache = await caches.open('songs-v1');
         const keys = await cache.keys();
-        const cachedUrls = keys.map(r => r.url);
+        const cachedUrls = keys.map(r => decodeURIComponent(r.url));
         const songsCached = EXPECTED_SONGS.filter(s =>
           cachedUrls.some(url => url.endsWith(s))
         ).length;
